@@ -21,3 +21,5 @@ backend/uploads/misc/*
 
 .DS_Store
 Thumbs.db
+
+.idea
