@@ -1,0 +1,34 @@
+[project]
+name = "zhuan-cloud-backend"
+version = "0.1.0"
+description = "筑安云后端 —— 工地安全隐患上报/处置/闭环/复盘 AI 协同平台（FastAPI + LangGraph）"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy>=2.0",
+    "pymysql",
+    "cryptography",
+    "pydantic",
+    "pydantic-settings",
+    "itsdangerous",
+    "python-multipart",
+    "langgraph>=0.2",
+    "langchain-core",
+    "openai>=1.40",
+    "numpy",
+    "python-docx",
+    "httpx",
+    "dashscope",
+]
+
+# 应用项目而非可发布库：不做 build/安装自身，只管理依赖。
+[tool.uv]
+package = false
+
+# 国内网络默认走阿里云 PyPI 镜像（与 uv.lock 绑定，保证团队/评委下载速度）。
+# 如需切回官方源：删除下面这一段，然后重新执行 `uv lock`。
+[[tool.uv.index]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
