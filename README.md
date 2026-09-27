@@ -36,6 +36,7 @@ AI自动完成**信息抽取 → 知识库检索（规范条款）→ 风险定�
 |---|---|---|
 | Agent编排 | **LangGraph** 状态机 | 抽取→追问判定→检索→定级→匹配→工单草稿，节点可独立替换引擎 |
 | 后端 | **FastAPI** + SQLAlchemy 2.0 | REST API，多层角色权限 |
+| 依赖管理 | **uv** + `pyproject.toml` / `uv.lock` | 一条 `uv sync` 重建环境，版本锁定可复现 |
 | 前端 | **Vue3 + Element Plus + ECharts** | 四角色工作台、AI对话、数据看板 |
 | 数据库 | **MySQL 8.4**（阿里云） | SQLite本地兜底开关，演示断网不翻车 |
 | 知识库 | 规范条款 + 轻量向量检索 | 真实模式=通义text-embedding-v4余弦；模拟模式=bigram相似度 |
@@ -46,25 +47,58 @@ AI自动完成**信息抽取 → 知识库检索（规范条款）→ 风险定�
 
 ## 快速启动（本地演示）
 
-**最简方式（推荐，Windows）**：下载/克隆本仓库后，双击根目录 **`一键启动.bat`** —— 自动创建环境、安装依赖、启动服务并打开浏览器（首次约2-5分钟，之后秒开）。无需 Node、无需 MySQL、无需任何 API Key：默认使用内置模拟引擎 + 本地 SQLite 演示库，开箱即用。
+**最简方式（推荐，Windows）**：下载/克隆本仓库后，双击根目录 **`一键启动.bat`** —— 自动创建环境、安装依赖、启动服务并打开浏览器（首次约1-2分钟，之后秒开）。无需 Node、无需 MySQL、无需任何 API Key：默认使用内置模拟引擎 + 本地 SQLite 演示库，开箱即用。若机器上没装 uv，脚本会用 pip 自动装一个。
 
 <details>
 <summary>手动命令行方式（macOS/Linux 或想看过程）</summary>
 
+后端依赖由 **uv** 管理（配置在 `backend/pyproject.toml`，精确版本锁定在 `backend/uv.lock`）。
+还没装 uv 的话先装一次：
+
+```bash
+# 任选其一
+pip install uv
+# Windows:  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+# macOS/Linux:  curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
 ```bash
 # 1. 后端（首次运行自动建表+灌入演示数据，数据库不可达时自动回退SQLite）
 cd backend
-python -m venv .venv                      # Python 3.11+
-.venv\Scripts\activate                    # Windows；macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
-python -m uvicorn app.main:app --port 8000
+uv sync                                   # 按 uv.lock 建 .venv 并装齐依赖（需 Python 3.11+）
+uv run python -m uvicorn app.main:app --port 8000
 
 # 2. 浏览器打开 http://127.0.0.1:8000 （前端构建产物已随仓库提供，无需Node）
 #    如需修改前端：cd frontend && npm install && npm run dev（开发模式，5173端口）
 ```
+
+常用命令：`uv add <包名>` 加依赖、`uv remove <包名>` 删依赖、`uv run python xxx.py` 在环境里跑脚本（都会同步更新 `uv.lock`，记得一并提交）。
 </details>
 
 **接入真实 AI / 云端数据库**：复制 `backend/.env.example` 为 `backend/.env` 填入配置；或启动后在网页左侧菜单「系统设置」里直接填 API Key、选模型（保存即生效）。默认模拟引擎不消耗任何额度，断网可演示。
+
+### 开启邮箱注册（可选，不配则无法注册新账号）
+
+默认未配置邮箱，注册接口直接返回"邮件服务暂未配置"，**只能用下面的演示账号登录**。要开放邮箱验证码注册，在 `backend/.env` 填这几项后重启后端（配置在启动时读取一次，改完必须重启）：
+
+| 字段 | 填什么 |
+|---|---|
+| `SMTP_HOST` | QQ邮箱填 `smtp.qq.com`；163邮箱填 `smtp.163.com` |
+| `SMTP_PORT` | `465`（SSL，推荐） |
+| `SMTP_USER` | 你的**完整邮箱地址**，如 `123456789@qq.com`（不是纯QQ号） |
+| `SMTP_PASS` | **授权码**（16位字母，不是邮箱登录密码） |
+| `SMTP_FROM` | 留空即可，程序自动用 `SMTP_USER`（填成与它不同的地址会被服务商拒信） |
+
+**QQ邮箱授权码怎么拿**：浏览器登录 `mail.qq.com` → 顶部「设置」→「账号」→ 找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务」→ 开启「IMAP/SMTP服务」→ 按提示用绑定手机发送指定短信 → 弹出 16 位授权码（**只显示一次，先复制存好**）。若之前开过，点「生成授权码」可重新获取。填登录密码而非授权码会认证失败。
+
+**验证是否配成功**（能收到邮件即成功）：
+
+```bash
+cd backend
+uv run python -c "from app.services.mailer import send_code_email; send_code_email('你的邮箱@qq.com','123456')"
+```
+
+注意邮件是**真实发送**的（`MOCK_MODE` 只管 AI 能力，不影响邮箱），QQ 免费邮箱有每日发信额度，演示时别反复点。
 
 ## 队友/评委如何访问
 
@@ -114,7 +148,9 @@ zhuan-cloud/
 │   │   ├── services/      # 语音转写、图片识别、周报生成、Word导出
 │   │   ├── models.py      # 9张表：users/subcontractors/zones/reports/work_orders/order_events/regulations/weekly_reports/projects
 │   │   └── seed.py        # 幂等演示数据：项目/分包/人员/分区/条款/六周历史工单
-│   └── knowledge/         # 规范条款知识库
+│   ├── knowledge/         # 规范条款知识库
+│   ├── pyproject.toml     # 后端依赖声明（uv）
+│   └── uv.lock            # 依赖精确版本锁定
 ├── frontend/              # Vue3 + Element Plus + ECharts
 └── scripts/               # 一键启动脚本
 ```
