@@ -33,7 +33,7 @@
 
         <el-tab-pane label="📷 图片上报" name="image">
           <el-upload drag :show-file-list="false" accept="image/*" :http-request="uploadImage">
-            <el-icon :size="40" color="#8fa3d0"><UploadFilled /></el-icon>
+            <el-icon :size="40" color="var(--z-text-5)"><UploadFilled /></el-icon>
             <div class="el-upload__text">拍摄或上传隐患照片，AI自动识别隐患</div>
           </el-upload>
           <div v-if="imageEngine" class="engine-note">识别引擎：{{ imageEngine }}</div>
@@ -179,15 +179,109 @@ async function submit() {
 </script>
 
 <style scoped>
-.examples { margin: 12px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.demo-label { color: #7a869c; font-size: 12px; }
-.voice-box { display: flex; align-items: center; gap: 16px; padding: 8px 0 16px; }
-.voice-tip { color: #5a6a8a; }
-.engine-note { color: #67c23a; font-size: 12px; margin: 8px 0; }
-.submit-row { margin-top: 16px; text-align: right; }
-.steps { margin-bottom: 8px; }
+.examples { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 14px 0 4px; }
+.demo-label { color: var(--z-text-4); font-size: var(--z-fs-sm); }
+.examples .el-button {
+  border-radius: var(--z-radius-pill);
+  color: var(--z-text-3);
+  font-size: var(--z-fs-sm);
+}
+.examples .el-button:hover {
+  color: var(--z-blue-600);
+  border-color: var(--z-blue-300);
+  background: var(--z-blue-25);
+}
+
+.voice-box {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--z-blue-25), var(--z-surface-2));
+  border: 1px solid var(--z-border-light);
+  border-radius: var(--z-radius-md);
+}
+.voice-box .el-button.is-circle {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border: none;
+  box-shadow: 0 8px 22px rgba(29, 91, 216, 0.3);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.voice-box .el-button.is-circle:hover { transform: scale(1.04); }
+.voice-box .el-button--danger.is-circle { animation: z-pulse 1.6s ease-out infinite; }
+@keyframes z-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(245, 108, 108, 0.42); }
+  70% { box-shadow: 0 0 0 14px rgba(245, 108, 108, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 108, 108, 0); }
+}
+.voice-tip { color: var(--z-text-3); font-size: var(--z-fs-body); line-height: 1.6; }
+
+.engine-note {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding: 3px 10px;
+  background: var(--z-success-soft);
+  color: var(--z-success);
+  border: 1px solid rgba(103, 194, 58, 0.28);
+  border-radius: var(--z-radius-pill);
+  font-size: var(--z-fs-sm);
+  font-weight: 600;
+}
+
+.submit-row { display: flex; justify-content: flex-end; margin-top: 20px; }
+.submit-row .el-button--primary:not(.is-disabled) {
+  height: 44px;
+  padding: 0 28px;
+  border: none;
+  font-size: 15px;
+  background-image: linear-gradient(135deg, var(--z-blue-600), var(--z-blue-500));
+  box-shadow: 0 8px 20px rgba(29, 91, 216, 0.28);
+}
+.submit-row .el-button--primary:not(.is-disabled):hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+/* 弹窗内部：AI 结果分区 */
+.steps { margin: 4px 0 20px; }
 .mt { margin-top: 14px; }
-.regs-title { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
-.reg-item { font-size: 12px; color: #4a5a7a; padding: 3px 0; border-bottom: 1px dashed #edf1f7; }
-.suggestion { background: #f7f9fc; border-radius: 8px; padding: 12px; font-size: 13px; white-space: pre-wrap; line-height: 1.7; }
+
+.regs-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  font-size: var(--z-fs-h);
+  color: var(--z-text-1);
+  margin-bottom: 10px;
+}
+.reg-item {
+  padding: 9px 12px 9px 14px;
+  margin-bottom: 6px;
+  font-size: var(--z-fs-body);
+  color: var(--z-text-3);
+  line-height: 1.6;
+  background: var(--z-surface-2);
+  border: 1px solid var(--z-border-light);
+  border-left: 3px solid var(--z-blue-300);
+  border-radius: var(--z-radius-xs);
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.reg-item:hover { background: var(--z-blue-25); border-left-color: var(--z-blue-600); }
+.reg-item:last-child { margin-bottom: 0; }
+
+.suggestion {
+  padding: 13px 16px;
+  font-size: var(--z-fs-body);
+  line-height: 1.75;
+  color: var(--z-text-2);
+  white-space: pre-wrap;
+  background: linear-gradient(135deg, var(--z-blue-25), var(--z-surface-2));
+  border: 1px solid var(--z-border-light);
+  border-left: 3px solid var(--z-blue-600);
+  border-radius: var(--z-radius-xs);
+}
 </style>

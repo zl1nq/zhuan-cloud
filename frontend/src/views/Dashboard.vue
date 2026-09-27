@@ -6,8 +6,8 @@
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-num">{{ s.total }}</div><div class="stat-label">累计隐患工单</div></div>
       <div class="stat-card"><div class="stat-num">{{ s.open_total }}</div><div class="stat-label">在办工单</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#f56c6c">{{ (s.overdue || []).length }}</div><div class="stat-label">超期未闭环</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#67c23a">{{ s.rect_rate }}</div><div class="stat-label">累计整改率</div></div>
+      <div class="stat-card"><div class="stat-num num-danger">{{ (s.overdue || []).length }}</div><div class="stat-label">超期未闭环</div></div>
+      <div class="stat-card"><div class="stat-num num-success">{{ s.rect_rate }}</div><div class="stat-label">累计整改率</div></div>
     </div>
 
     <div class="chart-grid">
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:16px">
+    <div class="card mt-16">
       <div class="chart-title">⚠️ 超期未闭环工单（重点督办）</div>
       <el-table :data="s.overdue || []" size="small" stripe>
         <el-table-column prop="order_no" label="工单号" width="150" />
@@ -107,9 +107,7 @@ function drawType() {
 </script>
 
 <style scoped>
-.chart-grid { display: grid; grid-template-columns: 2fr 1fr 1.4fr; gap: 12px; }
-.chart { height: 260px; }
-.chart-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #1d2b4f; }
-.risk-tag { font-weight: 700; }
+.chart-grid { display: grid; grid-template-columns: 2fr 1fr 1.4fr; gap: 14px; }
+.chart { height: 264px; }
 @media (max-width: 1100px) { .chart-grid { grid-template-columns: 1fr; } .stat-grid { grid-template-columns: repeat(2, 1fr); } }
 </style>

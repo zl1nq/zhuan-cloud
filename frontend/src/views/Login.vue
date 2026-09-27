@@ -56,7 +56,22 @@ async function doLogin() {
 
 <style scoped src="./login-style.css"></style>
 <style scoped>
-.slogan { color: #5a6a8a; font-size: 13px; margin: 12px 0 22px; padding-left: 2px; }
-.reg-foot { margin-top: 14px; font-size: 13px; color: #5a6a8a; text-align: center; }
-.reg-foot a { color: var(--zhuan-blue); text-decoration: none; font-weight: 600; }
+.slogan {
+  margin: 14px 0 22px;
+  padding: 8px 12px;
+  font-size: var(--z-fs-body);
+  color: var(--z-blue-800);
+  letter-spacing: 0.3px;
+  background: linear-gradient(90deg, var(--z-blue-50), rgba(232, 239, 251, 0));
+  border-left: 3px solid var(--z-blue-600);
+  border-radius: 0 var(--z-radius-xs) var(--z-radius-xs) 0;
+}
+.reg-foot { margin-top: 18px; font-size: var(--z-fs-body); color: var(--z-text-4); text-align: center; }
+.reg-foot a { color: var(--z-blue-600); text-decoration: none; font-weight: 600; }
+.reg-foot a:hover { text-decoration: underline; }
+
+:deep(.el-form-item) { margin-bottom: 20px; }
+:deep(.el-input__wrapper) { padding: 3px 14px; border-radius: var(--z-radius-md); }
+:deep(.el-input__inner) { font-size: 14px; }
+:deep(.el-input__prefix) { color: var(--z-text-5); }
 </style>

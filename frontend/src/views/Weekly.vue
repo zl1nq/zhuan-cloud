@@ -3,20 +3,20 @@
     <div class="page-title">安全周报</div>
     <div class="page-sub">按风险等级自动汇总本周隐患治理情况，AI生成周报，支持导出Word</div>
 
-    <div class="card" style="display:flex; gap:10px; align-items:center; margin-bottom:16px">
-      <el-select v-model="offset" style="width: 140px">
+    <div class="card toolbar mb-16">
+      <el-select v-model="offset" class="w-140">
         <el-option label="本周" :value="0" />
         <el-option label="上周" :value="-1" />
       </el-select>
       <el-button type="primary" :loading="generating" @click="generate">⚡ AI生成周报</el-button>
       <el-button v-if="current" @click="exportWord">📥 导出Word</el-button>
-      <span style="flex:1"></span>
-      <el-select v-if="history.length" v-model="historyId" placeholder="历史周报" style="width: 260px" @change="viewHistory">
+      <span class="flex-1"></span>
+      <el-select v-if="history.length" v-model="historyId" placeholder="历史周报" class="w-260" @change="viewHistory">
         <el-option v-for="h in history" :key="h.id" :label="h.week" :value="h.id" />
       </el-select>
     </div>
 
-    <div v-if="current" class="card md-body" v-html="rendered"></div>
+    <div v-if="current" class="card md-body report" v-html="rendered"></div>
     <el-empty v-else description="点击「AI生成周报」，AI将基于工单数据自动汇总本周安全情况" />
   </div>
 </template>
@@ -69,3 +69,8 @@ function exportWord() {
 
 onMounted(loadHistory)
 </script>
+
+<style scoped>
+/* 周报正文按"文档"排版：更大的内边距，配合全局 .md-body 排版 */
+.report { padding: 26px 30px 30px; }
+</style>

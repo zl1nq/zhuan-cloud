@@ -72,6 +72,19 @@ async function send(preset) {
 </script>
 
 <style scoped>
-.quick { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+.quick { display: flex; gap: 8px; margin: 12px 0 10px; flex-wrap: wrap; }
+.quick .el-button {
+  border-radius: var(--z-radius-pill);
+  color: var(--z-text-3);
+  font-size: var(--z-fs-sm);
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+}
+.quick .el-button:hover {
+  color: var(--z-blue-600);
+  border-color: var(--z-blue-300);
+  background: var(--z-blue-25);
+  transform: translateY(-1px);
+}
 .input-row { margin-top: 4px; }
+.input-row .el-button { padding: 0 22px; font-weight: 600; }
 </style>

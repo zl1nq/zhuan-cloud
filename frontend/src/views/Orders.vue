@@ -5,16 +5,16 @@
 
     <div class="card">
       <div class="filters">
-        <el-select v-model="f.status" placeholder="全部状态" clearable style="width: 130px" @change="load">
+        <el-select v-model="f.status" placeholder="全部状态" clearable class="w-130" @change="load">
           <el-option v-for="(label, key) in statusMap" :key="key" :label="label" :value="key" />
         </el-select>
-        <el-select v-model="f.risk" placeholder="全部风险" clearable style="width: 110px" @change="load">
+        <el-select v-model="f.risk" placeholder="全部风险" clearable class="w-110" @change="load">
           <el-option v-for="l in ['低', '中', '高', '重大']" :key="l" :label="l + '风险'" :value="l" />
         </el-select>
-        <el-input v-model="f.q" placeholder="搜索工单号/标题/描述" clearable style="width: 220px" @keyup.enter="load" @clear="load" />
+        <el-input v-model="f.q" placeholder="搜索工单号/标题/描述" clearable class="w-220" @keyup.enter="load" @clear="load" />
         <el-button type="primary" plain @click="load">查询</el-button>
         <el-checkbox v-if="isOfficer" v-model="f.mine" label="只看我上报的" @change="load" />
-        <span style="flex: 1"></span>
+        <span class="flex-1"></span>
         <el-tag effect="plain">共 {{ orders.length }} 单</el-tag>
       </div>
 
@@ -33,7 +33,7 @@
         <el-table-column label="期限" width="130">
           <template #default="{ row }">
             <span :class="{ 'overdue-txt': row.overdue }">{{ row.deadline || '-' }}</span>
-            <el-tag v-if="row.overdue" type="danger" size="small" effect="dark" style="margin-left:4px">超期</el-tag>
+            <el-tag v-if="row.overdue" type="danger" size="small" effect="dark" class="ml-4">超期</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="source_label" label="来源" width="70">
@@ -87,10 +87,10 @@
         <div v-if="actionBarVisible" class="sec">操作</div>
         <div v-if="actionBarVisible" class="actions">
           <template v-if="detail.order.status === 'pending_review' && canReview">
-            <el-select v-model="chosenResp" placeholder="指定责任人（AI已推荐）" style="width: 260px">
+            <el-select v-model="chosenResp" placeholder="指定责任人（AI已推荐）" class="w-260">
               <el-option v-for="u in respUsers" :key="u.id" :label="u.name + '（' + u.subcontractor + '）'" :value="u.id" />
             </el-select>
-            <el-input v-model="note" placeholder="审核备注（可空）" style="width: 200px" />
+            <el-input v-model="note" placeholder="审核备注（可空）" class="w-200" />
             <el-button type="primary" @click="act('approve')">✅ 审核通过并派单</el-button>
             <el-button type="danger" plain @click="act('reject')">驳回</el-button>
           </template>
@@ -104,11 +104,11 @@
               :http-request="uploadRectImage" :limit="6">
               <el-icon><Plus /></el-icon>
             </el-upload>
-            <el-button type="primary" style="margin-top: 8px" @click="act('submit')">📤 提交复查</el-button>
+            <el-button type="primary" class="mt-8" @click="act('submit')">📤 提交复查</el-button>
           </template>
           <template v-else-if="detail.order.status === 'recheck' && canReview">
             <el-input v-model="note" placeholder="复查意见（可空）" />
-            <div style="margin-top: 8px; display: flex; gap: 8px">
+            <div class="act-row">
               <el-button type="success" @click="act('pass')">✅ 复查合格·闭环</el-button>
               <el-button type="warning" plain @click="act('fail_recheck')">不合格·退回整改</el-button>
             </div>
@@ -247,20 +247,50 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.filters { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-.overdue-txt { color: #f56c6c; font-weight: 700; }
-.d-title { font-size: 17px; font-weight: 700; }
-.d-tags { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
-.mt { margin-top: 10px; }
-.sec { font-weight: 700; font-size: 13px; margin: 16px 0 6px; color: #1d2b4f; }
-.desc { font-size: 13px; color: #44506a; line-height: 1.7; }
-.pre { white-space: pre-wrap; background: #f7f9fc; padding: 10px; border-radius: 8px; }
-.refs { margin-top: 8px; }
-.ref-tag { margin: 0 6px 6px 0; }
+.filters { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+
+/* 局部组合类（宽度/间距工具类已提升到全局 styles.css） */
+.act-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+.overdue-txt { color: var(--z-danger); font-weight: 700; }
+
+.d-title { font-size: 17px; font-weight: 700; color: var(--z-text-1); line-height: 1.45; }
+.d-tags { display: flex; gap: 6px; margin: 10px 0 4px; flex-wrap: wrap; }
+.mt { margin-top: 14px; }
+
+.sec {
+  position: relative;
+  margin: 20px 0 8px;
+  padding-left: 10px;
+  font-weight: 700;
+  font-size: var(--z-fs-h);
+  color: var(--z-text-1);
+}
+.sec::before {
+  content: '';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 13px; border-radius: 2px;
+  background: var(--z-blue-600);
+}
+
+.desc { font-size: var(--z-fs-body); color: var(--z-text-3); line-height: 1.75; }
+.pre {
+  padding: 12px 14px;
+  color: var(--z-text-2);
+  white-space: pre-wrap;
+  background: linear-gradient(135deg, var(--z-blue-25), var(--z-surface-2));
+  border: 1px solid var(--z-border-light);
+  border-left: 3px solid var(--z-blue-600);
+  border-radius: var(--z-radius-xs);
+}
+
+.refs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.ref-tag { margin: 0; }
+
 .actions { display: flex; flex-direction: column; gap: 8px; }
-.upload-hint { font-size: 12px; color: #7a869c; }
+.upload-hint { font-size: var(--z-fs-sm); color: var(--z-text-4); }
 .imgs { display: flex; gap: 8px; flex-wrap: wrap; }
-.rect-img { width: 96px; height: 96px; border-radius: 8px; border: 1px solid #e4e9f2; }
-.ev-detail { color: #7a869c; font-size: 12px; margin-top: 2px; }
+.rect-img { width: 96px; height: 96px; border-radius: var(--z-radius-sm); border: 1px solid var(--z-border); }
+.ev-detail { margin-top: 3px; color: var(--z-text-4); font-size: var(--z-fs-sm); line-height: 1.6; }
 :deep(.el-table__row) { cursor: pointer; }
 </style>

@@ -8,7 +8,7 @@
           <div class="brand-sub">{{ meta.project.name || '智安协同平台' }}</div>
         </div>
       </div>
-      <el-menu :default-active="$route.path" router background-color="#14285e" text-color="#aebbdd" active-text-color="#ffffff" class="menu">
+      <el-menu :default-active="$route.path" router class="menu">
         <el-menu-item index="/dashboard"><el-icon><DataBoard /></el-icon>安全看板</el-menu-item>
         <el-menu-item v-if="canReport" index="/report"><el-icon><Camera /></el-icon>隐患上报</el-menu-item>
         <el-menu-item index="/orders"><el-icon><Tickets /></el-icon>整改工单</el-menu-item>
@@ -74,24 +74,96 @@ function logout() {
 
 <style scoped>
 .layout { height: 100vh; }
-.aside { background: #14285e; display: flex; flex-direction: column; }
-.brand { display: flex; align-items: center; gap: 10px; padding: 18px 16px 14px; cursor: pointer; }
+
+/* ---- 侧栏 ---- */
+.aside {
+  background: linear-gradient(180deg, var(--z-navy-900) 0%, var(--z-navy-800) 44%, var(--z-navy-700) 100%);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 2px 0 14px rgba(9, 20, 50, 0.2);
+}
+.brand { display: flex; align-items: center; gap: 11px; padding: 20px 16px 16px; cursor: pointer; }
 .brand-badge {
-  width: 40px; height: 40px; border-radius: 10px; background: var(--zhuan-blue);
-  color: #fff; font-weight: 800; font-size: 20px; display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; flex: none; border-radius: 11px;
+  background: linear-gradient(135deg, var(--z-blue-500), var(--z-blue-700));
+  box-shadow: 0 4px 12px rgba(29, 91, 216, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: #fff; font-weight: 800; font-size: 19px;
+  display: flex; align-items: center; justify-content: center;
 }
-.brand-name { color: #fff; font-weight: 700; font-size: 17px; }
-.brand-sub { color: #8fa3d0; font-size: 11px; max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.menu { border-right: none; flex: 1; }
-.menu .el-menu-item.is-active { background: var(--zhuan-blue) !important; }
-.aside-foot { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.08); }
-.db-line { color: #8fa3d0; font-size: 11px; margin-top: 8px; }
+.brand-name { color: #fff; font-weight: 700; font-size: 17px; letter-spacing: 0.5px; line-height: 1.35; }
+.brand-sub {
+  color: var(--z-side-text-dim); font-size: var(--z-fs-xs); letter-spacing: 0.3px;
+  max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.menu {
+  flex: 1;
+  border-right: none;
+  padding: 6px 10px;
+  background: transparent;
+  --el-menu-bg-color: transparent;
+  --el-menu-text-color: var(--z-side-text);
+  --el-menu-active-color: #ffffff;
+  --el-menu-hover-bg-color: var(--z-side-hover);
+}
+.menu .el-menu-item {
+  position: relative;
+  height: 44px; line-height: 44px;
+  margin-bottom: 4px;
+  border-radius: var(--z-radius-sm);
+  font-size: 14px;
+  color: var(--z-side-text);
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+.menu .el-menu-item .el-icon { width: 17px; font-size: 17px; margin-right: 10px; }
+.menu .el-menu-item:hover { color: #fff; background: var(--z-side-hover) !important; }
+.menu .el-menu-item.is-active {
+  background: linear-gradient(90deg, var(--z-blue-600), rgba(29, 91, 216, 0.72)) !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 3px 12px rgba(29, 91, 216, 0.42);
+}
+.menu .el-menu-item.is-active::before {
+  content: '';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 18px; border-radius: 0 3px 3px 0;
+  background: var(--z-side-accent);
+}
+
+.aside-foot { padding: 12px 16px 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.aside-foot .el-tag {
+  --el-tag-bg-color: rgba(103, 194, 58, 0.16);
+  --el-tag-border-color: rgba(103, 194, 58, 0.36);
+  --el-tag-text-color: var(--z-side-tag-text);
+  border-radius: var(--z-radius-pill);
+  font-weight: 600;
+}
+.db-line { color: var(--z-side-text-dim); font-size: var(--z-fs-xs); margin-top: 8px; letter-spacing: 0.2px; }
+
+/* ---- 顶栏 ---- */
 .header {
-  background: #fff; display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 1px 4px rgba(30,60,120,.06);
+  height: 60px;
+  padding: 0 22px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--z-border-light);
+  box-shadow: 0 1px 4px rgba(23, 52, 110, 0.04);
 }
-.header-title { font-size: 16px; font-weight: 700; color: #1d2b4f; }
-.header-right { display: flex; align-items: center; gap: 10px; }
-.uname { font-size: 14px; color: #33415e; }
-.main { padding: 18px; overflow-y: auto; }
+.header-title {
+  position: relative;
+  padding-left: 12px;
+  font-size: 16px; font-weight: 700; color: var(--z-text-1); letter-spacing: 0.3px;
+}
+.header-title::before {
+  content: '';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 16px; border-radius: 2px; background: var(--z-blue-600);
+}
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-right .el-tag { border-radius: var(--z-radius-pill); font-weight: 600; }
+.uname { font-size: 14px; font-weight: 600; color: var(--z-text-2); }
+
+.main { padding: 20px 22px 28px; overflow-y: auto; }
 </style>
